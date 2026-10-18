@@ -1,0 +1,11 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { normalized, preset } from '../lib/game/characters';
+import { simulate } from '../lib/game/physics';
+import type { Character, Piece } from '../lib/game/types';
+const slab:Character={kind:'slab',name:'slab',color:'#cccccc',points:normalized([{x:-70,y:-20},{x:0,y:-20},{x:70,y:-20},{x:70,y:0},{x:70,y:20},{x:0,y:20},{x:-70,y:20},{x:-70,y:0}])};
+const p=(x:number,character=slab,angle=0):Piece=>({id:crypto.randomUUID(),character,x,y:-230,angle});
+test('overhang can be safe when center of mass is over the platform',()=>{const f=simulate([],p(215),0,'a');assert.equal(f.safe,true);assert.ok(f.final[0].x+Math.max(...slab.points.map(p=>p.x))>246);});
+test('a partially touching body tips off when center of mass is beyond the edge',()=>{const f=simulate([],p(265),0,'a');assert.equal(f.safe,false);assert.ok(Math.abs(f.final[0].angle)>.02,'gravity/contact should cause rotation');});
+test('rotated asymmetric characters have pose-dependent physical trajectories',()=>{const a=simulate([],p(235,preset('sprout'),0),0,'a'),b=simulate([],p(235,preset('sprout'),Math.PI/2),0,'a');assert.notDeepEqual(a.frames,b.frames);});
+test('settled old pieces participate in collisions and can be knocked down',()=>{const base=simulate([],p(220),0,'a');assert.equal(base.safe,true);const newPiece=p(280,preset('mellow'));newPiece.y=base.final[0].y-200;const f=simulate(base.final,newPiece,0,'b');assert.equal(f.pieces.length,2);assert.notDeepEqual(f.final[0],base.final[0]);});
