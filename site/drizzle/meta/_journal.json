@@ -8,6 +8,13 @@
       "when": 1792305990564,
       "tag": "0000_high_norrin_radd",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1792308980863,
+      "tag": "0001_sad_susan_delgado",
+      "breakpoints": true
     }
   ]
 }

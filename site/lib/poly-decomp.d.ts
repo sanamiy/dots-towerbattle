@@ -1,1 +1,4 @@
-declare module 'poly-decomp' { const value: unknown; export default value; }
+declare module "poly-decomp" {
+  const value: unknown;
+  export default value;
+}

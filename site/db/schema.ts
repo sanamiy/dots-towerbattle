@@ -1,4 +1,9 @@
-import { sqliteTable, text, integer, uniqueIndex } from "drizzle-orm/sqlite-core";
+import {
+  sqliteTable,
+  text,
+  integer,
+  uniqueIndex,
+} from "drizzle-orm/sqlite-core";
 
 export const profiles = sqliteTable("profiles", {
   userId: text("user_id").primaryKey(),
@@ -9,12 +14,17 @@ export const rooms = sqliteTable("rooms", {
   revision: integer("revision").notNull(),
   data: text("data").notNull(),
   updatedAt: integer("updated_at").notNull(),
-});
-export const creations = sqliteTable("creations", {
-  id: text("id").primaryKey(),
-  userId: text("user_id").notNull(),
-  roomId: text("room_id").notNull(),
-}, (t) => [uniqueIndex("creation_owner_key").on(t.userId, t.id)]);
+  inviteHash: text("invite_hash"),
+}, (t) => [uniqueIndex("room_invite_hash").on(t.inviteHash)]);
+export const creations = sqliteTable(
+  "creations",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id").notNull(),
+    roomId: text("room_id").notNull(),
+  },
+  (t) => [uniqueIndex("creation_owner_key").on(t.userId, t.id)],
+);
 export const subscriptions = sqliteTable("subscriptions", {
   id: text("id").primaryKey(),
   userId: text("user_id").notNull(),

@@ -1,0 +1,34 @@
+{
+  "retrievedAt": "2026-10-18",
+  "officialPage": "https://openai.com/index/introducing-dots/",
+  "officialDocs": "https://learn.chatgpt.com/docs/dots",
+  "portraitManifest": "https://learn.chatgpt.com/_astro/DotIdentity.react.DcnTzj2t.js",
+  "portraits": {
+    "iggy": "https://learn.chatgpt.com/images/codex/dots/portrait-iggy.webp",
+    "alfred": "https://learn.chatgpt.com/images/codex/dots/portrait-alfred.webp",
+    "felipe": "https://learn.chatgpt.com/images/codex/dots/portrait-felipe.webp",
+    "todd": "https://learn.chatgpt.com/images/codex/dots/portrait-todd.webp"
+  },
+  "generationReference": "https://images.ctfassets.net/8su2tbn87fck/5c6KF403NZydjgJI4JRL6V/a51c63d6e728559d5c6069fa3169e0ff/poster-felipe.webp",
+  "generatedSample": "/dots/felipe-16-poses-v2.png",
+  "note": "The LP uses the real game renderer after six successful physics turns. Each of the four official characters has a separate AI-generated 16-pose sheet made with built-in ImageGen and its official PNG reference. These are unofficial derivative game assets.",
+  "officialPngOriginals": {
+    "iggy": "https://images.ctfassets.net/8su2tbn87fck/7CWQv0rfN2pMgFb84Q2bC3/f58361d25e71dbaaf21aa91ff1ffa459/poster-iggy.webp?fm=png",
+    "alfred": "https://images.ctfassets.net/8su2tbn87fck/1kV9mVs6c09GY7Fd6Kqe0Y/4cd80b14db0c087697481458a833005e/poster-alfred.webp?fm=png",
+    "felipe": "https://images.ctfassets.net/8su2tbn87fck/5c6KF403NZydjgJI4JRL6V/a51c63d6e728559d5c6069fa3169e0ff/poster-felipe.webp?fm=png",
+    "todd": "https://images.ctfassets.net/8su2tbn87fck/4YflfkDn7xUsAN4No5LsNf/92ae64f016cfc1efc70745c73029ce6c/poster-todd.webp?fm=png"
+  },
+  "landingPageImage": {
+    "file": "/dots/gameplay-tower.png",
+    "source": "Recorded local demo via shared lib/battle-scene.ts renderer",
+    "settledPieces": 10,
+    "renderer": "lib/battle-scene.ts + resvg",
+    "physics": "Matter.js, actual game turn engine"
+  },
+  "generatedSamples": {
+    "felipe": "/dots/felipe-16-poses-v2.png",
+    "iggy": "/dots/iggy-16-poses-v1.png",
+    "todd": "/dots/todd-16-poses-v1.png",
+    "alfred": "/dots/alfred-16-poses-v1.png"
+  }
+}

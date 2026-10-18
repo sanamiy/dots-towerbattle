@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import {MCP_URL} from '../lib/plugin-config.ts';
+const origin=process.env.TEST_ORIGIN??'http://127.0.0.1:5173';
+assert.ok(['localhost','127.0.0.1'].includes(new URL(origin).hostname));
+const headers=i=>({'Content-Type':'application/json','oai-authenticated-user-id':`file-import-qa-${i}`,'oai-authenticated-user-email':`file-import-qa-${i}@sites.test`});
+async function call(i,name,args){const r=await fetch(origin+'/mcp',{method:'POST',headers:headers(i),body:JSON.stringify({jsonrpc:'2.0',id:crypto.randomUUID(),method:'tools/call',params:{name,arguments:args}})});const d=await r.json();assert.equal(r.status,200);assert.ok(d.result,d.error?.message);return {result:d.result,data:JSON.parse(d.result.content[0].text)};}
+const list=await fetch(origin+'/mcp',{method:'POST',headers:headers(0),body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/list'})}).then(r=>r.json());
+const tool=list.result.tools.find(t=>t.name==='register_character_image');assert.deepEqual(tool._meta['openai/fileParams'],['file']);
+assert.deepEqual(tool.inputSchema.properties.file.required,['download_url','file_id']);
+const file={download_url:new URL('/dots/iggy-16-poses-v1.png',MCP_URL).href,file_id:'file-synthetic-local-qa',mime_type:'image/png',file_name:'iggy-sheet.png'};
+const args={name:'File dot',file,layout:'sheet_4x4',command_id:crypto.randomUUID()};
+const imported=await call(0,'register_character_image',args);assert.equal(imported.result.isError,false,JSON.stringify(imported.data));assert.equal(imported.data.pose_count,16);
+const first=await call(0,'get_profile',{});assert.equal(first.data.profile.character.poses.length,16);
+const images=first.data.profile.character.poses.map(p=>p.image);assert.equal(new Set(images).size,16);
+assert.ok(first.data.profile.character.poses.every(p=>p.collisionParts.length&&p.imageBounds&&p.colliderVersion==='alpha-v1'));
+const retry=await call(0,'register_character_image',args);assert.equal(retry.result.isError,false,JSON.stringify(retry.data));const second=await call(0,'get_profile',{});assert.deepEqual(second.data.profile.character.poses.map(p=>p.image),images);assert.equal(second.data.profile.poseReadyAt,first.data.profile.poseReadyAt);
+const own=await call(1,'get_profile',{});assert.notEqual(own.data.profile.name,'File dot');
+const single=await call(0,'register_character_image',{name:'Single dot',file:{...file,download_url:new URL('/dots/official-iggy.png',MCP_URL).href},layout:'single',command_id:crypto.randomUUID()});assert.equal(single.result.isError,false,JSON.stringify(single.data));assert.equal(single.data.pose_count,1);assert.equal(single.data.next_action,"start_pose_generation_now");assert.ok(single.data.generation_prompt);assert.equal(single.data.generation_policy.play_while_generating,true);
+const denied=await call(0,'register_character_image',{...args,file:{...file,download_url:'http://127.0.0.1/secret'}});assert.equal(denied.data.error.code,'UNSUPPORTED_FILE_HOST');
+console.log('MCP file metadata, real PNG download, sixteen individual colliders, single image, stable retry keys, and owner-only profile updates passed. Synthetic file reference used; a real dot file handoff still needs client verification.');
